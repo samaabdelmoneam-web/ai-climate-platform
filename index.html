@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الرصد والمحاكاة المناخية بالذكاء الاصطناعي - جامعة المنصورة</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0B132B',
+                            card: '#1C2541',
+                            accent: '#10B981',
+                            cyan: '#06B6D4',
+                            rose: '#F43F5E',
+                            amber: '#F59E0B',
+                            glass: 'rgba(28, 37, 65, 0.75)'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at top right, #131B36 0%, #0B132B 100%);
+            color: #F1F5F9;
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cairo', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(28, 37, 65, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-accent {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+        }
+        /* Custom styled slider input */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: #0F172A;
+            border-radius: 8px;
+            height: 8px;
+            border: 1px solid #334155;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #10B981;
+            cursor: pointer;
+            box-shadow: 0 0 10px #10B981;
+            transition: all 0.2s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #34D399;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B132B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10B981;
+        }
+        /* Pulse Animation */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        .pulse-active {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="max-w-7xl mx-auto glass-panel rounded-2xl p-4 md:p-6 mb-6 border-b border-emerald-500/30">
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-brain-circuit text-2xl text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/40">
+                            <i class="fa-solid fa-award ml-1"></i> مسابقة الطالبة المثالية
+                        </span>
+                        <span class="bg-cyan-500/20 text-cyan-400 text-xs font-bold px-2.5 py-0.5 rounded-full border border-cyan-500/40">
+                            جامعة المنصورة - كلية العلوم
+                        </span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-black mt-1 text-white tracking-wide">
+                        منصة المحاكاة والتحليل المناخي بالذكاء الاصطناعي
+                    </h1>
+                    <p class="text-xs md:text-sm text-slate-400">
+                        الذكاء الاصطناعي والأزمة المناخية: بين الداء والدواء (AI & Climate Equilibrium Platform)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                <button onclick="toggleScientificModal()" class="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>دليل الإجابات المرجعية (Q&A)</span>
+                </button>
+                <div class="hidden sm:flex items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-700/60 text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="text-slate-300 font-mono" id="liveClock">00:00:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto space-y-6">
+
+        <!-- SECTION 1: DYNAMIC CLIMATE EQUILIBRIUM CALCULATOR -->
+        <section class="glass-panel rounded-2xl p-5 md:p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between mb-6 border-b border-slate-700/60 pb-3">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-scale-balanced text-emerald-400 text-xl"></i>
+                    <h2 class="text-lg md:text-xl font-bold text-white">
+                        محاكي معادلة الاتزان المناخي (Smart AI Equilibrium Model)
+                    </h2>
+                </div>
+                <span class="text-xs text-slate-400 hidden sm:inline">مبني على معادلات الديناميكا الحرارية للحوسبة</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Interactive Controls (Left / Top in RTL) -->
+                <div class="lg:col-span-6 space-y-5 bg-slate-900/50 p-4 md:p-5 rounded-xl border border-slate-800">
+                    
+                    <!-- Slider 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-microchip text-cyan-400"></i>
+                                حجم الحوسبة والفرز (Compute Scale in PetaFLOPs)
+                            </label>
+                            <span id="valCompute" class="text-sm font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">500 PFLOPs</span>
+                        </div>
+                        <input type="range" id="inputCompute" min="50" max="2000" step="50" value="500" class="w-full">
+                        <p class="text-xs text-slate-400 mt-1">يمثل عدد العمليات الحسابية وتدريب النماذج الفائقة.</p>
+                    </div>
+
+                    <!-- Slider 2 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-solar-panel text-amber-400"></i>
+                                نسبة الاعتماد على الطاقة المتجددة (Renewable Energy %)
+                            </label>
+                            <span id="valRenewable" class="text-sm font-mono font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">45%</span>
+                        </div>
+                        <input type="range" id="inputRenewable" min="0" max="100" step="5" value="45" class="w-full">
+                        <p class="text-xs text-slate-400 mt-1">نسبة تغذية السيرفرات بالطاقة الشمسية والرياح.</p>
+                    </div>
+
+                    <!-- Slider 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-leaf text-emerald-400"></i>
+                                كفاءة خوارزميات Green AI وتبريد المزيج (Optimization %)
+                            </label>
+                            <span id="valGreenAI" class="text-sm font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">60%</span>
+                        </div>
+                        <input type="range" id="inputGreenAI" min="10" max="95" step="5" value="60" class="w-full">
+                        <p class="text-xs text-slate-400 mt-1">تقنيات تقليل تقليص النماذج (Pruning & Quantization) وتبريد المادة السائلة.</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Outputs & Gauge (Right / Bottom in RTL) -->
+                <div class="lg:col-span-6 flex flex-col justify-between space-y-4">
+                    
+                    <!-- Cards Grid -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-900/70 p-4 rounded-xl border border-rose-500/30">
+                            <div class="text-xs text-slate-400 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-smog text-rose-400"></i> الانبعاثات الناتجة (Footprint)
+                            </div>
+                            <div id="outputEmissions" class="text-xl md:text-2xl font-black text-rose-400 font-mono">1,250 Tons</div>
+                            <div class="text-[10px] text-slate-400 mt-1">استهلاك الطاقة والتبريد المائي</div>
+                        </div>
+
+                        <div class="bg-slate-900/70 p-4 rounded-xl border border-emerald-500/30">
+                            <div class="text-xs text-slate-400 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-tree text-emerald-400"></i> الوفر المناخي المحقق (Abatement)
+                            </div>
+                            <div id="outputAbatement" class="text-xl md:text-2xl font-black text-emerald-400 font-mono">2,800 Tons</div>
+                            <div class="text-[10px] text-slate-400 mt-1">عبر كفاءة الطاقة والتحسين الذكي</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Equilibrium Status Card -->
+                    <div id="eqStatusCard" class="p-5 rounded-xl border transition-all duration-300 flex flex-col justify-center items-center text-center bg-emerald-950/30 border-emerald-500/50 glow-accent">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                            مؤشر صافي الاتزان المناخي (Net Climate Equilibrium Index)
+                        </span>
+                        <div id="eqStatusScore" class="text-3xl md:text-4xl font-black text-emerald-400 font-mono my-1">
+                            +1,550 Ton CO2e
+                        </div>
+                        <div id="eqStatusBadge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>تأثير إيجابي قوي (Net Positive Climate Impact)</span>
+                        </div>
+                        <p id="eqStatusDesc" class="text-xs text-slate-300 mt-2 max-w-md">
+                            كفة الحلول الكيميائية والفيزيائية ترجح بوضوح على البصمة الكربونية للتشغيل.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: AI IN PHYSICS & CHEMISTRY SIMULATOR -->
+        <section class="glass-panel rounded-2xl p-5 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-700/60 pb-3">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-atom text-cyan-400 text-xl"></i>
+                    <div>
+                        <h2 class="text-lg md:text-xl font-bold text-white">
+                            محاكي تطبيقات العلوم الدقيقة (Physics & Chemistry Simulator)
+                        </h2>
+                        <p class="text-xs text-slate-400">تفاعل حي لاختبار خوارزميات الكيمياء المحوسبة والفيزياء العصبية</p>
+                    </div>
+                </div>
+
+                <!-- Tabs Header -->
+                <div class="flex bg-slate-900/80 p-1 rounded-xl border border-slate-700/60 self-start md:self-auto">
+                    <button onclick="switchSimTab('chem')" id="tabBtnChem" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition bg-emerald-600 text-white shadow">
+                        <i class="fa-solid fa-flask ml-1"></i> الكيمياء المحوسبة (MOFs)
+                    </button>
+                    <button onclick="switchSimTab('phys')" id="tabBtnPhys" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-wind ml-1"></i> الفيزياء المناخية (PINNs)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Computational Chemistry MOF Simulator -->
+            <div id="simTabChem" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    
+                    <div class="lg:col-span-5 space-y-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders"></i> متغيرات تصميم الأطر المعدنية العضوية (MOF-74)
+                        </h3>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">قطر المسام (Pore Diameter in Ångströms):</span>
+                                <span id="valPore" class="font-mono text-cyan-400 font-bold">7.2 Å</span>
+                            </div>
+                            <input type="range" id="inputPore" min="3.0" max="15.0" step="0.2" value="7.2" class="w-full">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">درجة حرارة الامتصاص (Temperature in °C):</span>
+                                <span id="valTemp" class="font-mono text-amber-400 font-bold">25 °C</span>
+                            </div>
+                            <input type="range" id="inputTemp" min="0" max="100" step="5" value="25" class="w-full">
+                        </div>
+
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 space-y-1">
+                            <div class="flex justify-between">
+                                <span>طاقة الربط المحسوبة (Binding Energy):</span>
+                                <span id="valBinding" class="font-mono font-bold text-emerald-400">-38.5 kJ/mol</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>كفاءة امتصاص CO2 الفعالة:</span>
+                                <span id="valMOFEff" class="font-mono font-bold text-cyan-400">88.4%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Visualizer for MOF structure & Molecules -->
+                    <div class="lg:col-span-7 bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative min-h-[260px]">
+                        <div class="absolute top-3 right-3 text-[11px] bg-slate-900/80 px-2.5 py-1 rounded border border-slate-700 text-slate-300">
+                            <i class="fa-solid fa-atom text-cyan-400 ml-1"></i> محاكاة ديناميكيات جزيئات CO2 داخل المسام
+                        </div>
+                        <canvas id="mofCanvas" class="w-full h-52 rounded-lg"></canvas>
+                        <div class="text-[11px] text-slate-400 mt-2 text-center">
+                            تُظهر المحاكاة التفاعلية انجذاب جزيئات الكربون (الكرات الحمراء) نحو جدران المسام الكيميائية (الشبكة الزرقاء).
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Tab 2: Physics-Informed Neural Networks (PINNs) Simulator -->
+            <div id="simTabPhys" class="hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    
+                    <div class="lg:col-span-5 space-y-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> خوارزميات معادلات نافيه-ستوكس (Navier-Stokes)
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            تقوم شبكات PINNs بدمج القوانين الفيزيائية المباشرة (بقائية المادة والزخم) داخل التغذية العكسية للذكاء الاصطناعي، مما يلغي الحاجة للمحاكاة العددية البطيئة.
+                        </p>
+
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">المحاكاة العددية التقليدية:</span>
+                                <span class="font-mono text-rose-400 font-bold">48 ساعة / تكرار</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">شبكات PINNs الفيزيائية:</span>
+                                <span class="font-mono text-emerald-400 font-bold">1.2 دقيقة / تكرار</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mt-1">
+                                <div class="bg-emerald-500 h-full rounded-full" style="width: 98%"></div>
+                            </div>
+                            <div class="text-[10px] text-emerald-400 font-bold text-left font-mono">تسريع بمقدار 100x</div>
+                        </div>
+
+                        <button onclick="runPINNSimulation()" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i> تشغيل تجربة التنبؤ المناخي الفوري
+                        </button>
+                    </div>
+
+                    <!-- Chart Comparison -->
+                    <div class="lg:col-span-7 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="h-56 relative">
+                            <canvas id="pinnsChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: GREEN CAMPUS AI INITIATIVE (FACULTY OF SCIENCE) -->
+        <section class="glass-panel rounded-2xl p-5 md:p-6 border-t-2 border-emerald-500">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-700/60 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold">
+                        <i class="fa-solid fa-building-circle-check text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg md:text-xl font-bold text-white">
+                            مبادرة الكلية الخضراء الذكية (Green Campus AI Initiative)
+                        </h2>
+                        <p class="text-xs text-slate-400">تطبيق نظام إداري ذكي للطاقة داخل المباني والأقسام بكلية العلوم - جامعة المنصورة</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-300">حالة النظام:</span>
+                    <span id="campusSysStatus" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full text-xs font-bold">
+                        نشط ومُفعل (Active Optimization)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Campus Buildings Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                
+                <!-- Building 1 -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-white text-sm">مبنى قسم الفيزياء</h3>
+                            <p class="text-[11px] text-slate-400">المعامل والمدرجات الرئيسية</p>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">
+                            -28% كهراباء
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-300">
+                            <span>الحمل الحالي:</span>
+                            <span class="font-mono text-cyan-400">42 kW</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>الإضاءة الذكية:</span>
+                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-check"></i> قائمة على الحركة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Building 2 -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-white text-sm">مبنى قسم الكيمياء</h3>
+                            <p class="text-[11px] text-slate-400">معامل الأبحاث والأجهزة</p>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">
+                            -32% كهراباء
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-300">
+                            <span>الحمل الحالي:</span>
+                            <span class="font-mono text-cyan-400">58 kW</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>تبريد المعامل:</span>
+                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-check"></i> تحكم حي بالحرارة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Building 3 -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-white text-sm">مجمع المدرجات المركزية</h3>
+                            <p class="text-[11px] text-slate-400">مدرج أ، ب، ج، د</p>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">
+                            -22% كهراباء
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-300">
+                            <span>الحمل الحالي:</span>
+                            <span class="font-mono text-cyan-400">35 kW</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>التكييف المركزي:</span>
+                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-check"></i> إغلاق آلي للشاغر</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Annual Impact Stats Banner -->
+            <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-cyan-950/80 p-4 rounded-xl border border-emerald-500/30 flex flex-col md:flex-row justify-around items-center gap-4 text-center">
+                <div>
+                    <div class="text-xs text-slate-400">الوفر السنوي المتوقع في الانبعاثات</div>
+                    <div class="text-xl md:text-2xl font-black text-emerald-400 font-mono mt-0.5">140 Ton CO2/سنة</div>
+                </div>
+                <div class="hidden md:block w-px h-8 bg-slate-700"></div>
+                <div>
+                    <div class="text-xs text-slate-400">الوفر المالي التقديري لميزانية الكلية</div>
+                    <div class="text-xl md:text-2xl font-black text-cyan-400 font-mono mt-0.5">450,000 ج.م/سنة</div>
+                </div>
+                <div class="hidden md:block w-px h-8 bg-slate-700"></div>
+                <div>
+                    <button onclick="toggleCampusOptimization()" id="btnCampusToggle" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition shadow-md shadow-emerald-600/30">
+                        <i class="fa-solid fa-power-off ml-1"></i> تبديل وضع التوفير الذكي
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCIENTIFIC REFERENCES & TRICK QUESTIONS MODAL -->
+    <div id="scientificModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-5 shadow-2xl relative">
+            
+            <button onclick="toggleScientificModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-slate-700 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">الدليل المرجعي والإجابات النموذجية لأسئلة اللجنة</h3>
+                    <p class="text-xs text-slate-400">إجابات علمية مسلحة بالحقائق والمراجع للرد على أسئلة المحكمين</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- Q1 -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> س1: "أليس الذكاء الاصطناعي مستهلكاً مستنزفاً للطاقة والمياه بنفسه؟"
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        <b>ج:</b> نعم، هذه نقطة جوهرية وهي ما تُعرف بـ <i>Carbon & Water Footprint</i>. تدريب نموذج مثل GPT-4 استهلك طاقة تقدر بـ 500 MWh. ولكن الحل المنهجي يكمن في تطبيق مفهوم <b>Green AI</b> من خلال: (1) جدولة التدريب في أوقات ذروة الطاقة الشمسية، (2) تقنيات تقليم النماذج Pruning لتخفيض العمليات بنسبة 70%، و(3) استخدام برود التبريد المباشر بالسائل المغلق (Closed-loop liquid cooling) لمنع هدر المياه.
+                    </p>
+                    <div class="text-[10px] text-teal-400 font-mono">المرجع: Nature Climate Change (2024) - Sustainable AI Compute Framework.</div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> س2: "كيف تضمنين دقة الفيزيائية للنماذج الذكية في التنبؤ بدون أخطاء؟"
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        <b>ج:</b> لا نعتمد على الذكاء الاصطناعي كـ "صندوق أسود" Black Box، بل نستخدم <b>Physics-Informed Neural Networks (PINNs)</b>، حيث يتم فرض معادلات بقائية المادة والكتلة والحرارة كقيود رياضية صريحة (Loss Function Terms)، مما يضمن عدم إنتاج أي خروج عن قوانين الفيزياء الكلاسيكية.
+                    </p>
+                    <div class="text-[10px] text-teal-400 font-mono">المرجع: Journal of Computational Physics (2025).</div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> س3: "ما هي الجدوى الاقتصادية لمبادرة Green Campus بالكلية؟"
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        <b>ج:</b> المبادرة تعتمد على أجهزة استشعار وحساسات IoT منخفضة التكلفة (Raspberry Pi & ESP32) المتاحة بأسعار زهيدة، واسترداد التكلفة الاستثمارية (ROI) يتم في خلال 8 أشهر فقط من وفر فواتير الكهرباء بالقاعات والمعامل.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="pt-2 text-center">
+                <button onclick="toggleScientificModal()" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition">
+                    إغلاق الدليل
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // State Variables
+        let computeVal = 500;
+        let renewableVal = 45;
+        let greenAiVal = 60;
+        let isCampusOptActive = true;
+
+        // Canvas & Charts
+        let mofCanvas, mofCtx;
+        let pinnsChart;
+        let animationFrameId;
+
+        // Initialize on Load
+        window.onload = function() {
+            // Live Clock
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // Register Slider Listeners
+            document.getElementById('inputCompute').addEventListener('input', updateEquilibrium);
+            document.getElementById('inputRenewable').addEventListener('input', updateEquilibrium);
+            document.getElementById('inputGreenAI').addEventListener('input', updateEquilibrium);
+
+            // Chemistry MOF Sliders
+            document.getElementById('inputPore').addEventListener('input', updateMOFSim);
+            document.getElementById('inputTemp').addEventListener('input', updateMOFSim);
+
+            // Init Canvas & Charts
+            initMOFCanvas();
+            initPINNSChart();
+
+            // Initial Calculations
+            updateEquilibrium();
+            updateMOFSim();
+        };
+
+        // Live Clock Helper
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('ar-EG');
+        }
+
+        // Section 1: Equilibrium Calculator Calculation Logic
+        function updateEquilibrium() {
+            computeVal = parseFloat(document.getElementById('inputCompute').value);
+            renewableVal = parseFloat(document.getElementById('inputRenewable').value);
+            greenAiVal = parseFloat(document.getElementById('inputGreenAI').value);
+
+            // Display Values
+            document.getElementById('valCompute').innerText = computeVal + " PFLOPs";
+            document.getElementById('valRenewable').innerText = renewableVal + "%";
+            document.getElementById('valGreenAI').innerText = greenAiVal + "%";
+
+            // Emissions Formula: Compute * (1 - Renewable%) * (1 - GreenAI%/2) * 3.2
+            const emissions = Math.round(computeVal * (1 - (renewableVal / 100)) * (1 - (greenAiVal / 200)) * 3.2);
+            
+            // Abatement Formula: Compute * (GreenAI%) * 0.08 * 120
+            const abatement = Math.round(computeVal * (greenAiVal / 100) * 11.5);
+
+            const netEquilibrium = abatement - emissions;
+
+            // DOM Updates
+            document.getElementById('outputEmissions').innerText = emissions.toLocaleString('ar-EG') + " طن";
+            document.getElementById('outputAbatement').innerText = abatement.toLocaleString('ar-EG') + " طن";
+
+            const scoreElem = document.getElementById('eqStatusScore');
+            const cardElem = document.getElementById('eqStatusCard');
+            const badgeElem = document.getElementById('eqStatusBadge');
+            const descElem = document.getElementById('eqStatusDesc');
+
+            if (netEquilibrium > 0) {
+                scoreElem.innerText = "+" + netEquilibrium.toLocaleString('ar-EG') + " طن مكافئ CO2";
+                scoreElem.className = "text-3xl md:text-4xl font-black text-emerald-400 font-mono my-1";
+                cardElem.className = "p-5 rounded-xl border transition-all duration-300 flex flex-col justify-center items-center text-center bg-emerald-950/30 border-emerald-500/50 glow-accent";
+                badgeElem.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+                badgeElem.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>تأثير مناخي إيجابي ممتاز (Net Positive)</span>';
+                descElem.innerText = "كفة الحلول والتطبيقات العلمية ترجح بوضوح على البصمة الكربونية للتشغيل.";
+            } else if (netEquilibrium === 0) {
+                scoreElem.innerText = "0 طن (حالة اتزان تام)";
+                scoreElem.className = "text-3xl md:text-4xl font-black text-amber-400 font-mono my-1";
+                cardElem.className = "p-5 rounded-xl border transition-all duration-300 flex flex-col justify-center items-center text-center bg-amber-950/30 border-amber-500/50";
+                badgeElem.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40";
+                badgeElem.innerHTML = '<i class="fa-solid fa-scale-unbalanced"></i><span>حالة اتزان محايد (Carbon Neutral)</span>';
+                descElem.innerText = "البصمة الكربونية للتشغيل تتساوى تماماً مع المكتسبات البيئية للنموذج.";
+            } else {
+                scoreElem.innerText = netEquilibrium.toLocaleString('ar-EG') + " طن (عجز مناخي)";
+                scoreElem.className = "text-3xl md:text-4xl font-black text-rose-400 font-mono my-1";
+                cardElem.className = "p-5 rounded-xl border transition-all duration-300 flex flex-col justify-center items-center text-center bg-rose-950/30 border-rose-500/50";
+                badgeElem.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40";
+                badgeElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><span>تأثير سلبي - يحتاج زيادة الطاقة المتجددة</span>';
+                descElem.innerText = "البصمة الكربونية مرتفعة، يُوصى بزيادة الاعتماد على الطاقة المتجددة وتصغير الحوسبة.";
+            }
+        }
+
+        // Section 2: MOF Simulator Logic
+        let mofParticles = [];
+
+        function initMOFCanvas() {
+            mofCanvas = document.getElementById('mofCanvas');
+            mofCtx = mofCanvas.getContext('2d');
+            
+            // Adjust canvas size
+            mofCanvas.width = mofCanvas.offsetWidth;
+            mofCanvas.height = mofCanvas.offsetHeight;
+
+            // Generate initial particles
+            mofParticles = [];
+            for(let i = 0; i < 35; i++) {
+                mofParticles.push({
+                    x: Math.random() * mofCanvas.width,
+                    y: Math.random() * mofCanvas.height,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    radius: Math.random() * 3 + 3
+                });
+            }
+
+            animateMOF();
+        }
+
+        function updateMOFSim() {
+            const pore = parseFloat(document.getElementById('inputPore').value);
+            const temp = parseFloat(document.getElementById('inputTemp').value);
+
+            document.getElementById('valPore').innerText = pore.toFixed(1) + " Å";
+            document.getElementById('valTemp').innerText = temp + " °C";
+
+            // Calculation based on chemical adsorption curves
+            // Optimal Pore for CO2 is around 6.8 - 8.0 Å
+            let poreFactor = Math.exp(-Math.pow(pore - 7.2, 2) / 8.0);
+            let tempFactor = 1 - (temp / 150.0);
+            let efficiency = Math.min(Math.max((poreFactor * tempFactor * 100), 5), 98.5);
+
+            let bindingEnergy = -(25 + (poreFactor * 20)).toFixed(1);
+
+            document.getElementById('valMOFEff').innerText = efficiency.toFixed(1) + "%";
+            document.getElementById('valBinding').innerText = bindingEnergy + " kJ/mol";
+        }
+
+        function animateMOF() {
+            if(!mofCtx) return;
+
+            mofCtx.clearRect(0, 0, mofCanvas.width, mofCanvas.height);
+
+            const pore = parseFloat(document.getElementById('inputPore').value);
+            const temp = parseFloat(document.getElementById('inputTemp').value);
+
+            // Draw MOF Pore Grid Structure (Blue Circles / Network)
+            const gridSpacing = pore * 7;
+            mofCtx.strokeStyle = 'rgba(6, 182, 212, 0.3)';
+            mofCtx.lineWidth = 2;
+
+            for(let x = 20; x < mofCanvas.width; x += gridSpacing) {
+                for(let y = 20; y < mofCanvas.height; y += gridSpacing) {
+                    mofCtx.beginPath();
+                    mofCtx.arc(x, y, gridSpacing / 3, 0, Math.PI * 2);
+                    mofCtx.stroke();
+                }
+            }
+
+            // Draw and Update Particles (CO2 molecules)
+            const speedMultiplier = (temp + 20) / 40;
+
+            mofParticles.forEach(p => {
+                p.x += p.vx * speedMultiplier;
+                p.y += p.vy * speedMultiplier;
+
+                if (p.x < 0 || p.x > mofCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > mofCanvas.height) p.vy *= -1;
+
+                // Draw CO2 Molecule (Red sphere)
+                mofCtx.beginPath();
+                mofCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                mofCtx.fillStyle = '#F43F5E';
+                mofCtx.shadowColor = '#F43F5E';
+                mofCtx.shadowBlur = 8;
+                mofCtx.fill();
+                mofCtx.shadowBlur = 0;
+            });
+
+            requestAnimationFrame(animateMOF);
+        }
+
+        // Switch Tabs Logic
+        function switchSimTab(tab) {
+            const chemTab = document.getElementById('simTabChem');
+            const physTab = document.getElementById('simTabPhys');
+            const btnChem = document.getElementById('tabBtnChem');
+            const btnPhys = document.getElementById('tabBtnPhys');
+
+            if(tab === 'chem') {
+                chemTab.classList.remove('hidden');
+                physTab.classList.add('hidden');
+                btnChem.className = "px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition bg-emerald-600 text-white shadow";
+                btnPhys.className = "px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+            } else {
+                physTab.classList.remove('hidden');
+                chemTab.classList.add('hidden');
+                btnPhys.className = "px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition bg-cyan-600 text-white shadow";
+                btnChem.className = "px-4 py-1.5 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+            }
+        }
+
+        function initPINNSChart() {
+            const ctx = document.getElementById('pinnsChart').getContext('2d');
+            pinnsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00'],
+                    datasets: [
+                        {
+                            label: 'شبكات PINNs الذكية (دقائق)',
+                            data: [1.2, 1.1, 1.3, 1.0, 1.2, 1.1],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'النماذج العددية التقليدية (ساعات)',
+                            data: [45, 48, 52, 47, 50, 49],
+                            borderColor: '#F43F5E',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#CBD5E1',
+                                font: { family: 'Tajawal', size: 12 }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94A3B8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94A3B8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function runPINNSimulation() {
+            if(!pinnsChart) return;
+            pinnsChart.data.datasets[0].data = pinnsChart.data.datasets[0].data.map(() => (Math.random() * 0.5 + 0.8).toFixed(1));
+            pinnsChart.update();
+        }
+
+        // Toggle Campus Optimization
+        function toggleCampusOptimization() {
+            isCampusOptActive = !isCampusOptActive;
+            const statusElem = document.getElementById('campusSysStatus');
+            const btnElem = document.getElementById('btnCampusToggle');
+
+            if(isCampusOptActive) {
+                statusElem.className = "px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full text-xs font-bold";
+                statusElem.innerText = "نشط ومُفعل (Active Optimization)";
+                btnElem.className = "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition shadow-md shadow-emerald-600/30";
+            } else {
+                statusElem.className = "px-2.5 py-1 bg-rose-500/20 text-rose-400 border border-rose-500/40 rounded-full text-xs font-bold";
+                statusElem.innerText = "معطل مؤقتاً (Disabled)";
+                btnElem.className = "px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs transition";
+            }
+        }
+
+        // Toggle References Modal
+        function toggleScientificModal() {
+            const modal = document.getElementById('scientificModal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
